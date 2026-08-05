@@ -89,11 +89,12 @@ export function Contact() {
 
               <motion.button
                 type="submit"
+                disabled={status === "sending"}
                 whileHover={{ y: -2, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-brand mt-6 w-full"
+                className="btn-brand mt-6 w-full disabled:opacity-60"
               >
-                <Send size={16} /> Send message
+                <Send size={16} /> {status === "sending" ? "Sending…" : "Send message"}
               </motion.button>
 
               <AnimatePresence>
@@ -110,11 +111,18 @@ export function Contact() {
                       transition={{ type: "spring", stiffness: 400, damping: 16 }}
                       className="grid h-8 w-8 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
                     >
-                      <Check size={16} />
+                      {status === "error" ? <AlertCircle size={16} /> : <Check size={16} />}
                     </motion.span>
-                    <p className="text-sm">Your mail client is opening — thanks for reaching out!</p>
+                    <p className="text-sm">
+                      {status === "error"
+                        ? "Something went wrong — please email me directly."
+                        : FORMSPREE_ID
+                          ? "Message sent — I'll get back to you soon!"
+                          : "Your mail client is opening — thanks for reaching out!"}
+                    </p>
                   </motion.div>
                 )}
+
               </AnimatePresence>
             </form>
           </Reveal>
