@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
+import { AlertCircle, Check, Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
 import { Reveal, SectionHeading } from "./Reveal";
 import { profile } from "@/data/portfolio";
 
@@ -12,21 +12,48 @@ const details = [
   { Icon: MapPin, label: "Location", value: profile.location },
 ];
 
-export function Contact() {
-  const [sent, setSent] = useState(false);
+// Paste your Formspree form ID here (formspree.io → New form → copy the ID from
+// the endpoint https://formspree.io/f/XXXXXXXX). Until then the form falls back
+// to opening the visitor's mail client.
+const FORMSPREE_ID = "";
 
-  // No backend: compose a prefilled email in the visitor's mail client.
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+export function Contact() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const subject = encodeURIComponent(String(form.get("subject") ?? "Portfolio enquiry"));
-    const body = encodeURIComponent(
-      `Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`,
-    );
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+
+    if (!FORMSPREE_ID) {
+      const subject = encodeURIComponent(String(form.get("subject") ?? "Portfolio enquiry"));
+      const body = encodeURIComponent(
+        `Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`,
+      );
+      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
+    setStatus("sending");
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: form,
+      });
+      if (!res.ok) throw new Error("Request failed");
+      formEl.reset();
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
+
+  const sent = status === "sent" || status === "error";
 
   return (
     <section id="contact" className="relative px-6 py-24">
@@ -62,11 +89,12 @@ export function Contact() {
 
               <motion.button
                 type="submit"
+                disabled={status === "sending"}
                 whileHover={{ y: -2, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-brand mt-6 w-full"
+                className="btn-brand mt-6 w-full disabled:opacity-60"
               >
-                <Send size={16} /> Send message
+                <Send size={16} /> {status === "sending" ? "Sending…" : "Send message"}
               </motion.button>
 
               <AnimatePresence>
@@ -83,11 +111,18 @@ export function Contact() {
                       transition={{ type: "spring", stiffness: 400, damping: 16 }}
                       className="grid h-8 w-8 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
                     >
-                      <Check size={16} />
+                      {status === "error" ? <AlertCircle size={16} /> : <Check size={16} />}
                     </motion.span>
-                    <p className="text-sm">Your mail client is opening — thanks for reaching out!</p>
+                    <p className="text-sm">
+                      {status === "error"
+                        ? "Something went wrong — please email me directly."
+                        : FORMSPREE_ID
+                          ? "Message sent — I'll get back to you soon!"
+                          : "Your mail client is opening — thanks for reaching out!"}
+                    </p>
                   </motion.div>
                 )}
+
               </AnimatePresence>
             </form>
           </Reveal>
