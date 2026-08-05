@@ -12,21 +12,48 @@ const details = [
   { Icon: MapPin, label: "Location", value: profile.location },
 ];
 
-export function Contact() {
-  const [sent, setSent] = useState(false);
+// Paste your Formspree form ID here (formspree.io → New form → copy the ID from
+// the endpoint https://formspree.io/f/XXXXXXXX). Until then the form falls back
+// to opening the visitor's mail client.
+const FORMSPREE_ID = "";
 
-  // No backend: compose a prefilled email in the visitor's mail client.
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+export function Contact() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const subject = encodeURIComponent(String(form.get("subject") ?? "Portfolio enquiry"));
-    const body = encodeURIComponent(
-      `Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`,
-    );
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+
+    if (!FORMSPREE_ID) {
+      const subject = encodeURIComponent(String(form.get("subject") ?? "Portfolio enquiry"));
+      const body = encodeURIComponent(
+        `Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`,
+      );
+      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
+    setStatus("sending");
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: form,
+      });
+      if (!res.ok) throw new Error("Request failed");
+      formEl.reset();
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
+
+  const sent = status === "sent" || status === "error";
 
   return (
     <section id="contact" className="relative px-6 py-24">
