@@ -21,7 +21,7 @@ export function About() {
           />
           <div className="space-y-5">
             {about.map((item, i) => {
-              const Icon = icons[i % icons.length];
+              const Icon = icons[i % icons.length]!;
               return (
                 <Reveal key={item.title} delay={i * 0.06}>
                   <article className="glass glass-hover relative rounded-3xl p-6 md:ml-14">
