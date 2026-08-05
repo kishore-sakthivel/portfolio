@@ -150,6 +150,21 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-3 rounded-full bg-gradient-to-tr from-accent-cyan/40 to-accent-purple/40 blur-2xl"
+              />
+              <img
+                src={portraitAsset.url}
+                alt={`Portrait of ${profile.displayName}, Python developer and data analyst`}
+                loading="eager"
+                className="glass relative h-44 w-44 rounded-full object-cover object-top p-1 sm:h-52 sm:w-52"
+              />
+            </div>
+          </div>
+
           <motion.div
             animate={{ y: [0, -14, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}

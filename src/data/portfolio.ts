@@ -4,7 +4,7 @@ import bankImg from "@/assets/project-bank.jpg";
 
 export const profile = {
   name: "Kishore S",
-  displayName: "Kishore Sam",
+  displayName: "Kishore S",
   roles: [
     "Python Developer",
     "AI Enthusiast",
