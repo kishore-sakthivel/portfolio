@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, Download, Github, Linkedin, Mail, MapPin } from "lucide-react";
 import { profile } from "@/data/portfolio";
 import resumeAsset from "@/assets/resume.pdf.asset.json";
+import portraitAsset from "@/assets/kishore.jpg.asset.json";
 
 function useTypewriter(words: string[]) {
   const [index, setIndex] = useState(0);
