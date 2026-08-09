@@ -16,7 +16,7 @@ export const profile = {
   location: "Pondicherry, India",
   email: "kishoresam969@gmail.com",
   phone: "+91 8778223821",
-  github: "https://github.com/kishores16",
+  github: "https://github.com/kishore-sakthivel",
   linkedin: "https://linkedin.com/in/kishores16",
 };
 
