@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Atmosphere } from "@/components/portfolio/Atmosphere";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
@@ -11,25 +10,7 @@ import { Achievements } from "@/components/portfolio/Achievements";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 
-const title = "Kishore S — Python Developer & Data Analyst";
-const description =
-  "Portfolio of Kishore S: Python developer and data analyst building ML models, SQL pipelines and Power BI dashboards. B.Tech IT, CGPA 8.0.";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "profile" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Index,
-});
-
-function Index() {
+export default function Home() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <Atmosphere />
