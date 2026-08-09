@@ -1,9 +1,10 @@
-import { createHashRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import Home from "./routes/index";
 
-export const router = createHashRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    { path: "/", element: <Home /> },
+    { path: "*", element: <Home /> },
+  ],
+  { basename: import.meta.env.BASE_URL.replace(/\/$/, "") || "/" },
+);
