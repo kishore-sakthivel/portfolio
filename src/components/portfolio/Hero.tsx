@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Download, Github, Linkedin, Mail, MapPin } from "lucide-react";
 import { profile } from "@/data/portfolio";
-import resumeAsset from "@/assets/resume.pdf.asset.json";
-import portraitAsset from "@/assets/kishore.jpg.asset.json";
+import resumeUrl from "@/assets/resume.pdf";
+import portraitUrl from "@/assets/kishore.jpg";
 
 function useTypewriter(words: string[]) {
   const [index, setIndex] = useState(0);
@@ -116,7 +116,7 @@ export function Hero() {
             <a href="#projects" className="btn-brand">
               View Projects
             </a>
-            <a href={resumeAsset.url} download="Kishore_S_Resume.pdf" className="btn-ghost">
+            <a href={resumeUrl} download="Kishore_S_Resume.pdf" className="btn-ghost">
               <Download size={16} /> Download Resume
             </a>
             <a href="#contact" className="btn-ghost">
@@ -158,7 +158,7 @@ export function Hero() {
                 className="absolute -inset-3 rounded-full bg-gradient-to-tr from-accent-cyan/40 to-accent-purple/40 blur-2xl"
               />
               <img
-                src={portraitAsset.url}
+                src={portraitUrl}
                 alt={`Portrait of ${profile.displayName}, Python developer and data analyst`}
                 loading="eager"
                 className="glass relative h-44 w-44 rounded-full object-cover object-top p-1 sm:h-52 sm:w-52"
