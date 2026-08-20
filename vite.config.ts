@@ -15,4 +15,4 @@ export default defineConfig(({ command }) => ({
     outDir: "dist",
     sourcemap: true,
   },
-});
+}));
