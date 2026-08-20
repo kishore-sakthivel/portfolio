@@ -139,7 +139,7 @@ export const projects: Project[] = [
       "Inconsistent and missing location data skewed early predictions; reconciling sources and validating outliers took more effort than the modelling itself.",
     learnings:
       "Model quality is mostly data quality. Feature engineering and honest validation beat swapping algorithms.",
-    github: "https://github.com/kishores16",
+    github: "https://github.com/kishore-sakthivel",
   },
   {
     title: "Live Stock Market Prediction & News Analysis",
@@ -159,7 +159,7 @@ export const projects: Project[] = [
       "Aligning noisy, irregularly timed news items with regular price intervals without leaking future information into training.",
     learnings:
       "Unstructured data adds real signal — but only with strict time discipline in the pipeline.",
-    github: "https://github.com/kishores16",
+    github: "https://github.com/kishore-sakthivel",
   },
   {
     title: "Integrated Multi-Bank User Management System",
@@ -179,7 +179,7 @@ export const projects: Project[] = [
       "Guaranteeing data integrity across modules while several account operations touched shared records.",
     learnings:
       "Validation and error handling belong at every boundary, not just the form.",
-    github: "https://github.com/kishores16",
+    github: "https://github.com/kishore-sakthivel",
   },
 ];
 
