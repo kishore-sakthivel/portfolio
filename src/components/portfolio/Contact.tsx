@@ -12,10 +12,10 @@ const details = [
   { Icon: MapPin, label: "Location", value: profile.location },
 ];
 
-// Paste your Formspree form ID here (formspree.io → New form → copy the ID from
-// the endpoint https://formspree.io/f/XXXXXXXX). Until then the form falls back
-// to opening the visitor's mail client.
-const FORMSPREE_ID = "";
+// Messages are delivered straight to the inbox below via FormSubmit (no backend,
+// works on GitHub Pages). The very first submission triggers a one-time
+// confirmation email from FormSubmit — click the link in it to activate delivery.
+const MAIL_ENDPOINT = `https://formsubmit.co/ajax/${profile.email}`;
 
 export function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -25,20 +25,9 @@ export function Contact() {
     const formEl = e.currentTarget;
     const form = new FormData(formEl);
 
-    if (!FORMSPREE_ID) {
-      const subject = encodeURIComponent(String(form.get("subject") ?? "Portfolio enquiry"));
-      const body = encodeURIComponent(
-        `Name: ${form.get("name")}\nEmail: ${form.get("email")}\n\n${form.get("message")}`,
-      );
-      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-      setStatus("sent");
-      setTimeout(() => setStatus("idle"), 4000);
-      return;
-    }
-
     setStatus("sending");
     try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      const res = await fetch(MAIL_ENDPOINT, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: form,
@@ -52,6 +41,7 @@ export function Contact() {
       setTimeout(() => setStatus("idle"), 5000);
     }
   };
+
 
   const sent = status === "sent" || status === "error";
 
