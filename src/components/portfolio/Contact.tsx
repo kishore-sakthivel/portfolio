@@ -57,6 +57,9 @@ export function Contact() {
         <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
             <form onSubmit={handleSubmit} className="glass relative rounded-3xl p-7 sm:p-9">
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="text" name="_honey" className="hidden" tabIndex={-1} autoComplete="off" />
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field name="name" label="Name" placeholder="Your name" />
                 <Field name="email" label="Email" type="email" placeholder="you@company.com" />
@@ -106,9 +109,7 @@ export function Contact() {
                     <p className="text-sm">
                       {status === "error"
                         ? "Something went wrong — please email me directly."
-                        : FORMSPREE_ID
-                          ? "Message sent — I'll get back to you soon!"
-                          : "Your mail client is opening — thanks for reaching out!"}
+                        : "Message sent — I'll get back to you soon!"}
                     </p>
                   </motion.div>
                 )}
