@@ -57,6 +57,9 @@ export function Contact() {
         <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
             <form onSubmit={handleSubmit} className="glass relative rounded-3xl p-7 sm:p-9">
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="text" name="_honey" className="hidden" tabIndex={-1} autoComplete="off" />
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field name="name" label="Name" placeholder="Your name" />
                 <Field name="email" label="Email" type="email" placeholder="you@company.com" />
