@@ -19,12 +19,10 @@ const MAIL_ENDPOINT = `https://formsubmit.co/ajax/${profile.email}`;
 
 export function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // Keep the last payload so a failed submit can be retried without retyping.
+  const [lastForm, setLastForm] = useState<FormData | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formEl = e.currentTarget;
-    const form = new FormData(formEl);
-
+  const submit = async (form: FormData, formEl?: HTMLFormElement) => {
     setStatus("sending");
     try {
       const res = await fetch(MAIL_ENDPOINT, {
@@ -33,17 +31,28 @@ export function Contact() {
         body: form,
       });
       if (!res.ok) throw new Error("Request failed");
-      formEl.reset();
+      formEl?.reset();
       setStatus("sent");
-      setTimeout(() => setStatus("idle"), 5000);
+      setTimeout(() => setStatus("idle"), 6000);
     } catch {
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    setLastForm(form);
+    void submit(form, formEl);
+  };
 
-  const sent = status === "sent" || status === "error";
+  const handleRetry = () => {
+    if (lastForm) void submit(lastForm);
+  };
+
+  const sent = status === "sent";
+  const errored = status === "error";
 
   return (
     <section id="contact" className="relative px-6 py-24">
