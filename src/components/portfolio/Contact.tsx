@@ -106,9 +106,7 @@ export function Contact() {
                     <p className="text-sm">
                       {status === "error"
                         ? "Something went wrong — please email me directly."
-                        : FORMSPREE_ID
-                          ? "Message sent — I'll get back to you soon!"
-                          : "Your mail client is opening — thanks for reaching out!"}
+                        : "Message sent — I'll get back to you soon!"}
                     </p>
                   </motion.div>
                 )}
