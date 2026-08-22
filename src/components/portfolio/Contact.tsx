@@ -100,29 +100,37 @@ export function Contact() {
               </motion.button>
 
               <AnimatePresence>
-                {sent && (
+                {(sent || errored) && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
                     className="glass absolute inset-x-7 bottom-7 flex items-center gap-3 rounded-2xl px-5 py-4"
                   >
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 400, damping: 16 }}
-                      className="grid h-8 w-8 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
                     >
-                      {status === "error" ? <AlertCircle size={16} /> : <Check size={16} />}
+                      {errored ? <AlertCircle size={16} /> : <Check size={16} />}
                     </motion.span>
-                    <p className="text-sm">
-                      {status === "error"
-                        ? "Something went wrong — please email me directly."
+                    <p className="flex-1 text-sm">
+                      {errored
+                        ? "Something went wrong — please try again or email me directly."
                         : "Message sent — I'll get back to you soon!"}
                     </p>
+                    {errored && (
+                      <button
+                        type="button"
+                        onClick={handleRetry}
+                        className="btn-ghost shrink-0 px-4 py-2 text-xs"
+                      >
+                        <RotateCw size={14} /> Retry
+                      </button>
+                    )}
                   </motion.div>
                 )}
-
               </AnimatePresence>
             </form>
           </Reveal>
