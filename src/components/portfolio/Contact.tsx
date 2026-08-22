@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, Check, Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
+import { AlertCircle, Check, Github, Linkedin, Mail, MapPin, Phone, RotateCw, Send } from "lucide-react";
 import { Reveal, SectionHeading } from "./Reveal";
 import { profile } from "@/data/portfolio";
 
