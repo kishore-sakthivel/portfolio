@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, Check, Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
+import { AlertCircle, Check, Github, Linkedin, Mail, MapPin, Phone, RotateCw, Send } from "lucide-react";
 import { Reveal, SectionHeading } from "./Reveal";
 import { profile } from "@/data/portfolio";
 
@@ -19,12 +19,10 @@ const MAIL_ENDPOINT = `https://formsubmit.co/ajax/${profile.email}`;
 
 export function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // Keep the last payload so a failed submit can be retried without retyping.
+  const [lastForm, setLastForm] = useState<FormData | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formEl = e.currentTarget;
-    const form = new FormData(formEl);
-
+  const submit = async (form: FormData, formEl?: HTMLFormElement) => {
     setStatus("sending");
     try {
       const res = await fetch(MAIL_ENDPOINT, {
@@ -33,17 +31,28 @@ export function Contact() {
         body: form,
       });
       if (!res.ok) throw new Error("Request failed");
-      formEl.reset();
+      formEl?.reset();
       setStatus("sent");
-      setTimeout(() => setStatus("idle"), 5000);
+      setTimeout(() => setStatus("idle"), 6000);
     } catch {
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    setLastForm(form);
+    void submit(form, formEl);
+  };
 
-  const sent = status === "sent" || status === "error";
+  const handleRetry = () => {
+    if (lastForm) void submit(lastForm);
+  };
+
+  const sent = status === "sent";
+  const errored = status === "error";
 
   return (
     <section id="contact" className="relative px-6 py-24">
@@ -91,29 +100,37 @@ export function Contact() {
               </motion.button>
 
               <AnimatePresence>
-                {sent && (
+                {(sent || errored) && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
                     className="glass absolute inset-x-7 bottom-7 flex items-center gap-3 rounded-2xl px-5 py-4"
                   >
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 400, damping: 16 }}
-                      className="grid h-8 w-8 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[image:var(--gradient-brand)] text-primary-foreground"
                     >
-                      {status === "error" ? <AlertCircle size={16} /> : <Check size={16} />}
+                      {errored ? <AlertCircle size={16} /> : <Check size={16} />}
                     </motion.span>
-                    <p className="text-sm">
-                      {status === "error"
-                        ? "Something went wrong — please email me directly."
+                    <p className="flex-1 text-sm">
+                      {errored
+                        ? "Something went wrong — please try again or email me directly."
                         : "Message sent — I'll get back to you soon!"}
                     </p>
+                    {errored && (
+                      <button
+                        type="button"
+                        onClick={handleRetry}
+                        className="btn-ghost shrink-0 px-4 py-2 text-xs"
+                      >
+                        <RotateCw size={14} /> Retry
+                      </button>
+                    )}
                   </motion.div>
                 )}
-
               </AnimatePresence>
             </form>
           </Reveal>
